@@ -41,13 +41,15 @@ function createMarkers(response) {
   let eqMarkers = [];
 
   // for loop to read each earthquake and get coordinates
-  for (i = 0; i < earthquakes.length; i++) {
+  for (i = 0; i < earthquakes.length; i++) { // earthquakes.length
 
-    let earthquake = earthquakes[i].geometry;
+    let earthquake = earthquakes[i];
+
+    // console.log(earthquake);
 
     // add each earthquake to list holding all the earthquake coordinates
-    let eqMarker = L.marker([earthquake.coordinates[1], earthquake.coordinates[0]]);
-      // .bindPop("<h3>" + earthquake.properites.place + "</h3>");
+    let eqMarker = L.marker([earthquake.geometry.coordinates[1], earthquake.geometry.coordinates[0]])
+      .bindPopup("<h3>" + earthquake.properties.place + "</h3>");
 
     eqMarkers.push(eqMarker);
 

@@ -1,7 +1,5 @@
 function createMap(eqLocations) {
 
-  
-
   // Adding a tile layer (the background map image) to our map:
   // We use the addTo() method to add objects to our map.
   let worldMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -30,9 +28,26 @@ function createMap(eqLocations) {
     collapsed: false
   }).addTo(myMap);
 
-}
-  
+  var legend = L.control({postion: 'bottomright'});
 
+  legend.onAdd = function (myMap) {
+
+    var div = L.DomUtil.create('div', 'info legend'),
+        grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+        labels = [];
+
+    for (var i = 0; i < grades.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+    }
+  
+      return div;
+  }
+
+  legend.addTo(myMap);
+
+}
 
 function createMarkers(response) {
     
@@ -41,15 +56,24 @@ function createMarkers(response) {
   let eqMarkers = [];
 
   // for loop to read each earthquake and get coordinates
-  for (i = 0; i < earthquakes.length; i++) { // earthquakes.length
+  for (i = 0; i < earthquakes.length; i++) { 
 
     let earthquake = earthquakes[i];
 
-    // console.log(earthquake);
+    let eqColor = getColor(earthquake.geometry.coordinates[2]);
 
     // add each earthquake to list holding all the earthquake coordinates
-    let eqMarker = L.marker([earthquake.geometry.coordinates[1], earthquake.geometry.coordinates[0]])
-      .bindPopup("<h3>" + earthquake.properties.place + "</h3>");
+
+    let eqMarker = L.circle([earthquake.geometry.coordinates[1], earthquake.geometry.coordinates[0]],{
+      color: "black",
+      fillColor: eqColor,
+      weight: 1,
+      fillOpacity: 0.75,
+      radius: earthquake.properties.mag * 10000
+    }).bindPopup("<h3> Location: " + earthquake.properties.place + 
+                "</h3><h3>Mag: " + earthquake.properties.mag + 
+                "</h3><h3>Depth: " + earthquake.geometry.coordinates[2] + 
+                "</h3><a href=" + earthquake.properties.url + ">URL</a>");
 
     eqMarkers.push(eqMarker);
 
@@ -58,6 +82,15 @@ function createMarkers(response) {
   // call createMap function to create the map
   createMap(L.layerGroup(eqMarkers));
 
+}
+
+function getColor(color){
+  return color > 90 ? "red" :
+         color > 70 ? "pink" :
+         color > 50 ? "orange" :
+         color > 30 ? "yellow" :
+         color > 10 ? "lightgreen" :
+                      "green";
 }
 
 // set URL for all earthquakes in the last week

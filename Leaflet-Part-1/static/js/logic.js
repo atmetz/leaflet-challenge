@@ -28,13 +28,13 @@ function createMap(eqLocations) {
     collapsed: false
   }).addTo(myMap);
 
-  var legend = L.control({postion: 'bottomright'});
+  // Create legend
+  var legend = L.control({position: 'bottomright'});
 
-  legend.onAdd = function (myMap) {
+  legend.onAdd = function () {
 
-    var div = L.DomUtil.create('div', 'info legend'),
-        grades = [0, 10, 20, 50, 100, 200, 500, 1000],
-        labels = [];
+    let div = L.DomUtil.create('div', 'info legend');
+    let grades = [-10, 10, 30, 50, 70, 90];
 
     for (var i = 0; i < grades.length; i++) {
         div.innerHTML +=
@@ -85,12 +85,12 @@ function createMarkers(response) {
 }
 
 function getColor(color){
-  return color > 90 ? "red" :
-         color > 70 ? "pink" :
-         color > 50 ? "orange" :
-         color > 30 ? "yellow" :
-         color > 10 ? "lightgreen" :
-                      "green";
+  return color > 90 ?  '#800026' : 
+         color > 70 ? '#BD0026' : 
+         color > 50 ? '#E31A1C' : 
+         color > 30 ? '#FC4E2A' : 
+         color > 10 ? '#FD8D3C': 
+         '#FEB24C'; 
 }
 
 // set URL for all earthquakes in the last week
